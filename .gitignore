@@ -1,0 +1,11 @@
+__pycache__
+*.zip
+*.rar
+*.log
+*.onnx
+*.bak
+*.pth
+
+/libs/__pycache__
+/output
+
