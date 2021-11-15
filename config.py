@@ -35,25 +35,25 @@ cfg = {
     'batch_size':128,
     'epochs':20,
     'optimizer':'SGD',  #Adam  SGD 
-    'scheduler':'default-0.1-5', #default  SGDR-5-2  CVPR   step-4-0.8
+    'scheduler':'default-0.1-3', #default  SGDR-5-2  CVPR   step-4-0.8
 
     'warmup_epoch':0, # 
-    'weight_decay' : 0,#0.0001,
-    "k_flod":5,
-    'start_fold':0,
+    'weight_decay' : 0.0001,
+    # "k_flod":5,
+    # 'start_fold':0,
     'early_stop_patient':4,
 
-    'use_distill':0,
-    'label_smooth':0,
+    # 'use_distill':0,
+    # 'label_smooth':0,
     'checkpoint':None,
-    'class_weight': None,#s[1.4, 0.78], # None [1, 1]
+    # 'class_weight': None,#s[1.4, 0.78], # None [1, 1]
     'clip_gradient': 0,#1,       # 0
-    'freeze_nonlinear_epoch':0,
+    # 'freeze_nonlinear_epoch':0,
 
-    # 'dropout':0.5, #before last_linear
+    'dropout':0., #before last_linear
 
-    'mixup':False,
-    'sample_weights':None,
+    # 'mixup':False,
+    # 'sample_weights':None,
 
 
     ### Test
@@ -78,10 +78,10 @@ cfg = {
                 "scheduler",
                 "warmup_epoch",
                 "weight_decay",
-                "k_flod",
-                "start_fold",
-                'label_smooth',
-                'class_weight',
+                # "k_flod",
+                # "start_fold",
+                # 'label_smooth',
+                # 'class_weight',
                 'clip_gradient',
                 'dropout',
                 'loss',
