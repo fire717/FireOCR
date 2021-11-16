@@ -1,7 +1,7 @@
 import os,argparse
 import random
         
-from fire import initFire, FireModel, FireRunner, FireData
+from libs import initOCR, DenseCNN, OCRRunner, OCRData
 
 from config import cfg
 import pandas as pd
@@ -11,21 +11,21 @@ import pandas as pd
 def main(cfg):
 
 
-    initFire(cfg)
+    initOCR(cfg)
 
 
-    model = FireModel(cfg)
+    model = DenseCNN(cfg)
     
     
 
-    data = FireData(cfg)
+    data = OCRData(cfg)
     # data.showTrainData()
     # b
     
     test_loader = data.getTestDataloader()
 
 
-    runner = FireRunner(cfg, model)
+    runner = OCRRunner(cfg, model)
 
     #print(model)
     runner.modelLoad(cfg['model_path'])

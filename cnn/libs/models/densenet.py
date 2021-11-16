@@ -24,18 +24,37 @@ class dense_block(nn.Module):
         # self.nb_filter = nb_filter
         self.outp = outp
 
-        self.convs = []
-        for i in range(self.nb_layers):
-            self.convs.append(conv_block(inp+8*i,8).cuda())
+        # self.convs = []
+        # for i in range(self.nb_layers):
+        #     self.convs.append(conv_block(inp+8*i,8).cuda())
+
+        self.conv1 = conv_block(inp+8*0,8)
+        self.conv2 = conv_block(inp+8*1,8)
+        self.conv3 = conv_block(inp+8*2,8)
+        self.conv4 = conv_block(inp+8*3,8)
+        self.conv5 = conv_block(inp+8*4,8)
+        self.conv6 = conv_block(inp+8*5,8)
+        self.conv7 = conv_block(inp+8*6,8)
+        self.conv8 = conv_block(inp+8*7,8)
 
     def forward(self, x):
-        for i in range(self.nb_layers):
-            #print(x.shape, self.convs[i])
-            cb = self.convs[i](x)
-            #print(x.shape, cb.shape)
-            x = torch.cat((x, cb), 1)
-            # self.nb_filter += outp
+        # for conv in self.convs:
+        #     #print(x.shape, self.convs[i])
+        #     cb = conv(x)
+        #     #print(x.shape, cb.shape)
+        #     x = torch.cat((x, cb), 1)
+        #     # self.nb_filter += outp
+        x =  torch.cat((x,self.conv1(x)), 1)
+        x =  torch.cat((x,self.conv2(x)), 1)
+        x =  torch.cat((x,self.conv3(x)), 1)
+        x =  torch.cat((x,self.conv4(x)), 1)
+        x =  torch.cat((x,self.conv5(x)), 1)
+        x =  torch.cat((x,self.conv6(x)), 1)
+        x =  torch.cat((x,self.conv7(x)), 1)
+        x =  torch.cat((x,self.conv8(x)), 1)
         return x
+
+
 
 def transition_block(inp, outp):
     return nn.Sequential(

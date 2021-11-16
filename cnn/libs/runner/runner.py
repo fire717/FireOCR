@@ -401,7 +401,7 @@ class OCRRunner():
     def onTrainStart(self):
         
 
-        self.early_stop_value = 0
+        self.early_stop_value = -1
         self.early_stop_dist = 0
         self.last_save_path = None
 
@@ -428,19 +428,21 @@ class OCRRunner():
 
             # img = data[0].transpose(1,2,0)*255
             # cv2.imwrite('t.jpg', img)
-            # print(data, data.shape, target, img_names)
+            # print(data.shape, target[0], img_names[0])
+            # print(data[0])
             # b
+            
             target = target.to(self.device)
             data = data.to(self.device)
 
             # print(data[0,0,10:30,20:50])
             output = self.model(data).double()
-            # print(output)
+            # print(output.shape)
             # b
             input_lengths = torch.IntTensor([output.size(1)] * output.size(0))
             #torch.tensor([35],dtype=torch.int).detach().cuda()
             #print(input_lengths.size())
-            target_lengths = torch.tensor([len(x) for x in target],dtype=torch.int).detach().cuda()
+            target_lengths = torch.tensor([len(x) for x in target],dtype=torch.int).cuda()
             loss = self.loss_func(output, target, input_lengths, target_lengths)
             # print(loss.item())
             # b

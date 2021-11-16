@@ -68,6 +68,7 @@ class TrainDataAug:
 
         
         img = Image.fromarray(img)
+        
         return img
 
 

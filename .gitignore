@@ -6,6 +6,6 @@ __pycache__
 *.bak
 *.pth
 
-/libs/__pycache__
-/output
+/cnn/libs/__pycache__
+/cnn/output
 

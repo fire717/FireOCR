@@ -13,11 +13,11 @@ cfg = {
 
 
     ### Train Setting
-    'dict_path':"../data/char_std_5990.txt",
+    'dict_path':"../../data/char_std_5990.txt",
 
-    'img_dir':"../data/images",
-    'train_label_path': "../data/data_train.txt",# if 'DIR' quale  train_path
-    'val_label_path':"../data/data_test.txt",
+    'img_dir':"../../data/images",
+    'train_label_path': "../../data/data_train.txt",# if 'DIR' quale  train_path
+    'val_label_path':"../../data/data_test.txt",
     'pretrained':'', #path or ''
     'log_interval':10,  
     'try_to_train_items': 0,   # 0 means all
@@ -59,7 +59,7 @@ cfg = {
     ### Test
     'show_heatmap':False,
     
-    'model_path':'output/.pth',#test model
+    'model_path':'output/densenet_e1_0.00000.pth',#test model
 
     'eval_path':"./data/test",#test with label,get test acc
     'test_path':"./data/test",#test without label, just show img result
