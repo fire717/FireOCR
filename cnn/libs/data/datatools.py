@@ -40,18 +40,6 @@ class TensorDatasetTrainClassify(Dataset):
         self.img_dir = img_dir
         self.transform = transform
 
-        # self.label_dict = {}
-        # self.getLabels()
-        # self.cate_dirs = []
-
-    # def getLabels(self, img_path):
-    #     label_path = os.path.join(self.label_dir, os.path.basename(img_path)[:-3]+'txt')
-
-    #     with open(label_path, 'r') as f:
-    #         line = f.readlines()[0]
-    #     label = np.array([int(x) for x in line.strip().split(',')])
-    #     return label
-
 
     def __getitem__(self, index):
 
@@ -59,16 +47,10 @@ class TensorDatasetTrainClassify(Dataset):
         img_name = items[0]
         label = np.array([int(x) for x in items[1:]])
 
-        # print(self.img_dir, img_name)
         img = cv2.imread(os.path.join(self.img_dir, img_name))
 
         if self.transform is not None:
             img = self.transform(img)
-
-        # y = self.getLabels(self.data[index])
-
-        # y_onehot = [0,0]
-        # y_onehot[y] = 1
 
         return img, label, self.data[index]
         
@@ -78,34 +60,25 @@ class TensorDatasetTrainClassify(Dataset):
 
 class TensorDatasetTestClassify(Dataset):
 
-    def __init__(self, train_jpg, transform=None):
-        self.train_jpg = train_jpg
+    def __init__(self, data, transform=None):
+        self.data = data
         if transform is not None:
             self.transform = transform
         else:
             self.transform = None
 
     def __getitem__(self, index):
-        # img = cv2.imread(self.train_jpg[index])
-        # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        #img = cv2.resize(img,(180, 180))
 
-        #img = Image.open(self.train_jpg[index]).convert('RGB')
-        img = cv2.imread(self.train_jpg[index])
-        #img = imgPaddingWrap(img)
-        #b
+        img = cv2.imread(self.data[index])
+
         if self.transform is not None:
             img = self.transform(img)
 
-        # path_dir = '/'.join(self.train_jpg[index].split('/')[:-1])
-        # y = 0
-        # if  'true' in path_dir:
-        #     y = 1
 
-        return img, self.train_jpg[index]
+        return img, self.data[index]
 
     def __len__(self):
-        return len(self.train_jpg)
+        return len(self.data)
 
 
 ###### 3. get data loader 
@@ -132,7 +105,7 @@ def getDataLoader(mode, input_data, cfg):
                                 transforms.Compose([
                                     data_aug_test,
                                     transforms.ToTensor(),
-                                    my_normalize
+                                    transforms.Normalize(0.5,1)
                                 ])
                 ), batch_size=cfg['test_batch_size'], shuffle=False, 
                 num_workers=cfg['num_workers'], pin_memory=cfg['pin_memory']

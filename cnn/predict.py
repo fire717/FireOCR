@@ -14,7 +14,7 @@ def main(cfg):
     initOCR(cfg)
 
 
-    model = DenseCNN(cfg)
+    model = DenseCNN(cfg["img_size"], cfg["class_number"]+1)
     
     
 
@@ -34,12 +34,6 @@ def main(cfg):
     res_dict = runner.predict(test_loader)
     print(len(res_dict))
     
-    # to csv
-    res_df = pd.DataFrame.from_dict(res_dict, orient='index', columns=['label'])
-    res_df = res_df.reset_index().rename(columns={'index':'image_id'})
-    res_df.to_csv(os.path.join(cfg['save_dir'], 'pre.csv'), 
-                                index=False,header=True)
-
 
 
 if __name__ == '__main__':

@@ -59,10 +59,10 @@ cfg = {
     ### Test
     'show_heatmap':False,
     
-    'model_path':'output/densenet_e1_0.00000.pth',#test model
+    'model_path':'output/densenet_e2_0.85521.pth',#test model
 
     'eval_path':"./data/test",#test with label,get test acc
-    'test_path':"./data/test",#test without label, just show img result
+    'test_path':"../../data/test",#test without label, just show img result
     'use_TTA':0,
     'test_batch_size': 1,
     

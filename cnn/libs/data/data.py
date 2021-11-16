@@ -76,13 +76,13 @@ class OCRData():
     #                                     self.cfg)
     #     return data_loader
 
-    # def getTestDataloader(self):
-    #     data_names = getFileNames(self.cfg['test_path'])
-    #     input_data = [data_names]
-    #     data_loader = getDataLoader("test", 
-    #                                 input_data,
-    #                                 self.cfg)
-    #     return data_loader
+    def getTestDataloader(self):
+        data_names = getFileNames(self.cfg['test_path'])
+        input_data = [data_names]
+        data_loader = getDataLoader("test", 
+                                    input_data,
+                                    self.cfg)
+        return data_loader
 
 
     def showTrainData(self, show_num = 200):

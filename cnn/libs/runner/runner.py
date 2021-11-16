@@ -121,7 +121,16 @@ class OCRRunner():
         # if self.cfg['show_heatmap']:
         #     self.extractor = ModelOutputs(self.model, self.model.features[12], ['0'])
 
+        self.alphabet = {}
+        self.loadDict()
 
+
+    def loadDict(self):
+        with open(self.cfg['dict_path'], 'r') as f:
+            lines = f.readlines()
+        for i,line in enumerate(lines):
+            self.alphabet[i] = line.strip()
+        print("load dict: ", len(self.alphabet))
 
 
     def train(self, train_loader, val_loader):
@@ -159,14 +168,9 @@ class OCRRunner():
                 output = self.model(data).double()
 
 
-                #print(output.shape)
-                pred_score = nn.Softmax(dim=1)(output)
-                #print(pred_score.shape)
-                pred = output.max(1, keepdim=True)[1] # get the index of the max log-probability
-
-                batch_pred_score = pred_score.data.cpu().numpy().tolist()
-                for i in range(len(batch_pred_score)):
-                    res_dict[os.path.basename(img_names[i])] = pred[i].item()
+                pred = decodeOutput(output.detach().cpu().numpy())
+                for i in range(len(output)):
+                    print(img_names[i], [self.alphabet[x] for x in pred[i]])
 
 
         pres = np.array(pres)
