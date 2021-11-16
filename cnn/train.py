@@ -25,6 +25,9 @@ def main(cfg):
 
 
     runner = OCRRunner(cfg, model)
+    if cfg['pretrained']:
+        runner.modelLoad(cfg['pretrained'])
+        print("load :", cfg['pretrained'])
     runner.train(train_loader, val_loader)
 
 

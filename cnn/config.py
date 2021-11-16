@@ -18,7 +18,7 @@ cfg = {
     'img_dir':"../../data/images",
     'train_label_path': "../../data/data_train.txt",# if 'DIR' quale  train_path
     'val_label_path':"../../data/data_test.txt",
-    'pretrained':'', #path or ''
+    'pretrained':'output/densenet_e2_0.85521.pth', #path or ''
     'log_interval':10,  
     'try_to_train_items': 0,   # 0 means all
     'save_best_only': True,  #only save model if better than before
