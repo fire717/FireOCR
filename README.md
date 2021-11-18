@@ -12,5 +12,8 @@ My OCR toolbox with pytorch.
 
 Transfer from this [chinese_ocr](https://github.com/YCG09/chinese_ocr) (Keras version to Pytoch).
 
+
+
+
 ### 2.2 Transformer based OCR
 To be implemented...
