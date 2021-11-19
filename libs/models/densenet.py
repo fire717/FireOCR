@@ -81,7 +81,9 @@ class DenseCNN(nn.Module):
         self.relu1 = nn.ReLU()
         self.dense = torch.nn.Linear(768,n_class)
 
-        self.task2 = torch.nn.Linear(768*105,1)
+        
+        self.pool =  nn.AdaptiveMaxPool1d(1)
+        self.task2 = torch.nn.Linear(105,1)
 
         self._initialize_weights()
 
@@ -114,10 +116,14 @@ class DenseCNN(nn.Module):
         # print(x.shape)
         #Permute((2, 1, 3), name='permute')(x)
         # print('4',x)
-        out1 = self.dense(x)
+        out1 = self.dense(x)#[32, 105, 22]
 
         if mode=='train':
-            x = x.reshape(x.shape[0], -1)
+            #print(x.shape)#[32, 105, 768]
+            x = self.pool(x).squeeze()
+            # print(x.shape)
+            # b
+            
             out2 = self.task2(x)
             return out1, out2
         else:

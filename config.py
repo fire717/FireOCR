@@ -4,7 +4,7 @@ cfg = {
     ### Global Set
     "model_name": "dense",  
     #dense/swin
-    'GPU_ID': '0',
+    'GPU_ID': '1',
     "class_number": 21,
 
     "random_seed":42,
@@ -31,7 +31,7 @@ cfg = {
 
     ### Train Hyperparameters
     "img_size": [32, 840], # [h, w] 
-    'learning_rate':0.1,
+    'learning_rate':0.01,
     'batch_size':32,
     'epochs':200,
     'optimizer':'SGD',  #Adam  SGD 
