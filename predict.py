@@ -5,7 +5,7 @@ from libs import initOCR, DenseCNN, SwinTransformer, OCRRunner, OCRData
 
 from config import cfg
 import pandas as pd
-
+import json
 
 
 def main(cfg):
@@ -33,13 +33,15 @@ def main(cfg):
     runner = OCRRunner(cfg, model)
 
     #print(model)
-    runner.modelLoad(cfg['model_path'])
+    runner.modelLoad(cfg['model_path'], False)
 
 
     res_dict = runner.predict(test_loader)
     print(len(res_dict))
     
-
+    with open(r"answer.json",'w') as f:  
+        json.dump(res_dict, f, indent=2, ensure_ascii=False)     
+    print('done')
 
 if __name__ == '__main__':
     main(cfg)

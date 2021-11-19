@@ -22,8 +22,8 @@ def parseLabel(label_path, img_dir, dict_path):
 
     val_ratio = 0.04
 
-    f_train = open('train.txt', 'w')
-    f_val = open('val.txt', 'w')
+    f_train = open('train.txt', 'a')
+    f_val = open('val.txt', 'a')
 
     for line in lines[1:-1]:
         items = line.strip().split(": ")

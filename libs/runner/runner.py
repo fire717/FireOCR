@@ -165,15 +165,20 @@ class OCRRunner():
             for (data, img_names) in data_loader:
                 data = data.to(self.device)
 
+                # print(data.shape)
                 output = self.model(data).double()
 
-
-                pred = decodeOutput(output.detach().cpu().numpy())
+                # print(output.shape, output)
+                pred,conf = decodeOutput(output.detach().cpu().numpy())
+                # print(pred)
                 for i in range(len(output)):
-                    print(img_names[i], [self.alphabet[x] for x in pred[i]])
+                    # print(img_names[i], ''.join([self.alphabet[x] for x in pred[i]]), conf)
+                # b
 
-
-        pres = np.array(pres)
+                    item = {}
+                    item["result"] = ''.join([self.alphabet[x] for x in pred[i]])
+                    item["confidence"] = conf[i]
+                    res_dict[os.path.basename(img_names[i])] = item
 
         return res_dict
 
@@ -417,27 +422,36 @@ class OCRRunner():
         count = 0
         batch_time = 0
         total_loss = 0
-        for batch_idx, (data, target, img_names) in enumerate(train_loader):
+        for batch_idx, (data, target, lens) in enumerate(train_loader):
             one_batch_time_start = time.time()
 
 
             # img = data[0].transpose(1,2,0)*255
             # cv2.imwrite('t.jpg', img)
-            # print(data.shape, target[0], img_names[0])
             # print(data[0])
+            # print(target[0])
+            # print(lens[0])
+            # print(data.shape, target.shape, lens.shape)
             # b
-            
+
+            # print(target, lens)
             target = target.to(self.device)
+            # new_target = []
+            # for i in range(len(data)):
+            #     new_target.extend(target[i][:lens[i]])
+            # new_target = torch.tensor(new_target).to(self.device)
             data = data.to(self.device)
 
             # print(data[0,0,10:30,20:50])
             output = self.model(data).double()
             # print(output.shape)
             # b
-            input_lengths = torch.IntTensor([output.size(1)] * output.size(0))
+            input_lengths = torch.IntTensor([output.size(1)] * output.size(0)).to(self.device)
             #torch.tensor([35],dtype=torch.int).detach().cuda()
             #print(input_lengths.size())
-            target_lengths = torch.tensor([len(x) for x in target],dtype=torch.int).cuda()
+            # target_lengths = torch.tensor([len(x) for x in target],dtype=torch.int).cuda()
+            target_lengths = lens.to(self.device)
+            # print(output.shape, target, target_lengths)
             loss = self.loss_func(output, target, input_lengths, target_lengths)
             # print(loss.item())
             # b
@@ -455,17 +469,32 @@ class OCRRunner():
             ### train acc
             # print(output.detach().cpu().numpy())
             # b
-            pred = decodeOutput(output.detach().cpu().numpy())
+            # print(output.shape)
+            pred,conf = decodeOutput(output.detach().cpu().numpy())
+            # print(pred)
             target = target.detach().cpu().numpy()
-            # print(target[0],pred[0])
-            for i in range(len(target)):
+            # print(target, target.shape)
+            lens = lens.detach().cpu().numpy()
+            # print(lens)
+            start_id = 0
+            for i in range(len(lens)):
                 # print(target[i])
                 # print(pred[i])
                 # b
-                if np.array_equal(target[i],pred[i]):
+                # print("---")
+                
+                # print(target[start_id:start_id+lens[i]], pred[i])
+                # print(pred[i])
+                # print('-----')
+                if np.array_equal(target[start_id:start_id+lens[i]], pred[i]):
+                    # print("1111 ",target[:lens[i]], pred[i])
                     correct += 1
-            count += len(data)
+                start_id+=lens[i]
 
+            # print("----------")
+            # b
+            count += len(data)
+            # b
             train_acc =  correct / count
             train_loss = total_loss/count
             #print(train_acc)
@@ -530,12 +559,16 @@ class OCRRunner():
                 #torch.tensor([35],dtype=torch.int).detach().cuda()
                 #print(input_lengths.size())
                 target_lengths = torch.tensor([len(x) for x in target],dtype=torch.int).detach().cuda()
-                
+                # print(input_lengths, target_lengths)
                 self.val_loss += self.loss_func(output, target, input_lengths, target_lengths).item() # sum up batch loss
 
-                pred = decodeOutput(output.detach().cpu().numpy())
+                # print(output)
+                pred,conf = decodeOutput(output.detach().cpu().numpy())
                 target = target.detach().cpu().numpy()
 
+                # print(pred)
+                # print(target,target.shape)
+                # b
                 for i in range(len(target)):
 
                     if np.array_equal(target[i],pred[i]):

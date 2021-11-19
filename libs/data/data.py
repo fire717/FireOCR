@@ -108,7 +108,7 @@ class OCRData():
             os.makedirs(show_path)
 
 
-        img_path_list = getFileNames(self.cfg['train_path'])[:show_num]
+        img_path_list = getFileNames(self.cfg['img_dir'])[:show_num]
         transform = transforms.Compose([TrainDataAug(self.cfg['img_size'])])
 
 

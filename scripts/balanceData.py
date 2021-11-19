@@ -25,14 +25,21 @@ def main(read_path, save_path, min_count):
 
     new_lines = []
     for line in lines:
+        expand = 1
         for k,v in d.items():
+            #print(k,v, min_count)
             if v < min_count and k in line:
-                mul_ratio = min_count//v//6
-                for _ in range(mul_ratio):
-                    new_lines.append(line)
-            else:
-                new_lines.append(line)
+                mul_ratio = min_count//v
+                if mul_ratio>expand:
+                    expand = mul_ratio
 
+
+        # print(expand)   
+
+        for _ in range(expand):
+            new_lines.append(line)
+
+        # b
 
 
     d = countLines(new_lines)

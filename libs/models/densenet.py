@@ -24,34 +24,35 @@ class dense_block(nn.Module):
         # self.nb_filter = nb_filter
         self.outp = outp
 
-        # self.convs = []
-        # for i in range(self.nb_layers):
-        #     self.convs.append(conv_block(inp+8*i,8).cuda())
+        convs = []
+        for i in range(self.nb_layers):
+            convs.append(conv_block(inp+8*i,8).cuda())
+        self.convs = nn.ModuleList(convs)
 
-        self.conv1 = conv_block(inp+8*0,8)
-        self.conv2 = conv_block(inp+8*1,8)
-        self.conv3 = conv_block(inp+8*2,8)
-        self.conv4 = conv_block(inp+8*3,8)
-        self.conv5 = conv_block(inp+8*4,8)
-        self.conv6 = conv_block(inp+8*5,8)
-        self.conv7 = conv_block(inp+8*6,8)
-        self.conv8 = conv_block(inp+8*7,8)
+        # self.conv1 = conv_block(inp+8*0,8)
+        # self.conv2 = conv_block(inp+8*1,8)
+        # self.conv3 = conv_block(inp+8*2,8)
+        # self.conv4 = conv_block(inp+8*3,8)
+        # self.conv5 = conv_block(inp+8*4,8)
+        # self.conv6 = conv_block(inp+8*5,8)
+        # self.conv7 = conv_block(inp+8*6,8)
+        # self.conv8 = conv_block(inp+8*7,8)
 
     def forward(self, x):
-        # for conv in self.convs:
-        #     #print(x.shape, self.convs[i])
-        #     cb = conv(x)
-        #     #print(x.shape, cb.shape)
-        #     x = torch.cat((x, cb), 1)
-        #     # self.nb_filter += outp
-        x =  torch.cat((x,self.conv1(x)), 1)
-        x =  torch.cat((x,self.conv2(x)), 1)
-        x =  torch.cat((x,self.conv3(x)), 1)
-        x =  torch.cat((x,self.conv4(x)), 1)
-        x =  torch.cat((x,self.conv5(x)), 1)
-        x =  torch.cat((x,self.conv6(x)), 1)
-        x =  torch.cat((x,self.conv7(x)), 1)
-        x =  torch.cat((x,self.conv8(x)), 1)
+        for conv in self.convs:
+            #print(x.shape, self.convs[i])
+            cb = conv(x)
+            #print(x.shape, cb.shape)
+            x = torch.cat((x, cb), 1)
+            # self.nb_filter += outp
+        # x =  torch.cat((x,self.conv1(x)), 1)
+        # x =  torch.cat((x,self.conv2(x)), 1)
+        # x =  torch.cat((x,self.conv3(x)), 1)
+        # x =  torch.cat((x,self.conv4(x)), 1)
+        # x =  torch.cat((x,self.conv5(x)), 1)
+        # x =  torch.cat((x,self.conv6(x)), 1)
+        # x =  torch.cat((x,self.conv7(x)), 1)
+        # x =  torch.cat((x,self.conv8(x)), 1)
         return x
 
 
@@ -68,14 +69,14 @@ class DenseCNN(nn.Module):
     def __init__(self, input_size=(32,280), n_class=5000, _nb_filter = 64):
         super(DenseCNN, self).__init__()
 
-        self.conv1 = nn.Conv2d(1, _nb_filter,kernel_size=5,stride=2,padding=2, bias=False)
+        self.conv1 = nn.Conv2d(3, _nb_filter,kernel_size=5,stride=2,padding=2, bias=False)
         self.db1 = dense_block(8, _nb_filter,  8)
         self.tb1 = transition_block(128,128)
         self.db2 = dense_block(8, 128, 8)
         self.tb2 = transition_block(192,128)
         self.db3 = dense_block(8, 128, 8)
 
-        self.bn1 = nn.BatchNorm2d(35)
+        self.bn1 = nn.BatchNorm2d(192)
         self.relu1 = nn.ReLU()
         self.dense = torch.nn.Linear(768,n_class)
 
@@ -91,14 +92,19 @@ class DenseCNN(nn.Module):
         x = self.tb2(x)
         x = self.db3(x)
         
-        x = x.permute(0, 3, 1, 2)
         # print(x.shape)
+
         x = self.bn1(x)
         # print('1',x)
         x = self.relu1(x)
+
+
+        x = x.permute(0, 3, 1, 2)
+        # print(x.shape)
+        # b
+        
         # print(x.shape)
         # print('2',x)
-        
         # print(x.shape)
         # print('3',x)
         x = x.view(x.shape[0], x.shape[1], -1)
@@ -141,7 +147,7 @@ if __name__ == '__main__':
     import os
     os.environ["CUDA_VISIBLE_DEVICES"] = '1'
     model = DenseCNN().cuda()
-    print(summary(model, (1, 32, 280)))
+    print(summary(model, (3, 32, 840)))
 
 
     # dummy_input1 = torch.randn(1, 1, 32, 280).cuda()
