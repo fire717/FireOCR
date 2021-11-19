@@ -22,8 +22,8 @@ def main(cfg):
         raise Exception("Unkown model_name: ", cfg["model_name"])
 
     data = OCRData(cfg)
-    data.showTrainData()
-    b
+    # data.showTrainData()
+    # b
     
     train_loader, val_loader = data.getTrainValDataloader()
 

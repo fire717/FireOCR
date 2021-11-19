@@ -4,7 +4,7 @@ cfg = {
     ### Global Set
     "model_name": "dense",  
     #dense/swin
-    'GPU_ID': '1',
+    'GPU_ID': '0',
     "class_number": 21,
 
     "random_seed":42,
@@ -31,7 +31,7 @@ cfg = {
 
     ### Train Hyperparameters
     "img_size": [32, 840], # [h, w] 
-    'learning_rate':0.01,
+    'learning_rate':0.1,
     'batch_size':32,
     'epochs':200,
     'optimizer':'SGD',  #Adam  SGD 
@@ -59,7 +59,7 @@ cfg = {
     ### Test
     'show_heatmap':False,
     
-    'model_path':'output/dense_e49_0.82016.pth',#test model
+    'model_path':'output/dense_e80_0.91281.pth',#test model
 
     'test_img_dir':"../../data/images",#test with label,get test acc
     'test_label_path':"../../data/data_test.txt",

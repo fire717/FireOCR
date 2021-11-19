@@ -64,6 +64,10 @@ class TensorDatasetTrain(Dataset):
                 one_batch.append(self.data[i])
                 now_w = now_w+w+10
 
+        if len(one_batch)>0:
+            self.data_list.append(one_batch)
+            one_batch = []
+            now_w = 0
 
     def __getitem__(self, index):
         lines = self.data_list[index]

@@ -69,6 +69,7 @@ class DenseCNN(nn.Module):
     def __init__(self, input_size=(32,280), n_class=5000, _nb_filter = 64):
         super(DenseCNN, self).__init__()
 
+
         self.conv1 = nn.Conv2d(3, _nb_filter,kernel_size=5,stride=2,padding=2, bias=False)
         self.db1 = dense_block(8, _nb_filter,  8)
         self.tb1 = transition_block(128,128)
@@ -80,10 +81,12 @@ class DenseCNN(nn.Module):
         self.relu1 = nn.ReLU()
         self.dense = torch.nn.Linear(768,n_class)
 
+        self.task2 = torch.nn.Linear(768*105,1)
+
         self._initialize_weights()
 
 
-    def forward(self, x):
+    def forward(self, x, mode='train'):
         x = self.conv1(x)
         
         x = self.db1(x)
@@ -111,9 +114,14 @@ class DenseCNN(nn.Module):
         # print(x.shape)
         #Permute((2, 1, 3), name='permute')(x)
         # print('4',x)
-        x = self.dense(x)
+        out1 = self.dense(x)
 
-        return x
+        if mode=='train':
+            x = x.reshape(x.shape[0], -1)
+            out2 = self.task2(x)
+            return out1, out2
+        else:
+            return out1
 
 
     def _initialize_weights(self):

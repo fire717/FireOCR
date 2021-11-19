@@ -17,17 +17,47 @@ import platform
 
 
 ###### 1.Data aug
-def addLine(img, p=0.5):
+def addLine(img, p=1):
+    if random.random()<p:
+        h,w = img.shape[:2]
 
+        color = random.randint(0,70)
+        # thickness = random.randint(1,1)
 
+        y = random.randint(1,h-1)
+        #print(y)
+        cv2.line(img, (0,y), (w-1,y), (color,color,color), 1)
     return img
 
 
-def randomPaste(img, p=0.5):
-    colors = [(255,255,255), ()]
+def randomPaste(img, p=1):
+    if random.random()<p:
+        h,w = img.shape[:2]
+
+        count = random.randint(1,6)
+        count = min(w//h, count)
+
+        
+        for _ in range(count):
+
+            x0 = random.randint(0,w-10)
+            y0 = random.randint(0,h-10)
+            x1 = min(w-1, x0+8)
+            y1 = min(h-1, y0+8)
+
+            # if random.random()<0.4:
+            #     #black
+            #     color = random.randint(0,70)
+            #     colors = (color,color,color)
+            # else:
+            #     #red
+            color = random.randint(180,230)
+            colors = (color,random.randint(0,20),random.randint(0,20))
+
+            cv2.rectangle(img, (x0,y0), (x1,y1), colors, random.randint(1,6))
+
 
     return img
-
 class TrainDataAug:
     def __init__(self, img_size):
         self.h = img_size[0]
@@ -42,47 +72,35 @@ class TrainDataAug:
         # min_size = max(img.shape[:2])
 
 
-        # img = A.ShiftScaleRotate(
-        #                         shift_limit=0.1,
-        #                         scale_limit=0.1,
-        #                         rotate_limit=3,
-        #                         interpolation=cv2.INTER_LINEAR,
-        #                         border_mode=cv2.BORDER_CONSTANT,
-        #                          value=0, mask_value=0,
-        #                         p=1)(image=img)['image']
-
-        # img = A.GridDistortion(num_steps=5, distort_limit=0.2,
-        #                     interpolation=1, border_mode=4, p=1)(image=img)['image']
-        #GridDropout
-        # img = A.OneOf([A.ShiftScaleRotate(
-        #                         shift_limit=0.1,
-        #                         scale_limit=0.1,
-        #                         rotate_limit=30,
-        #                         interpolation=cv2.INTER_LINEAR,
-        #                         border_mode=cv2.BORDER_CONSTANT,
-        #                          value=0, mask_value=0,
-        #                         p=0.5),
-        #                 A.GridDistortion(num_steps=5, distort_limit=0.2,
-        #                     interpolation=1, border_mode=4, p=0.4)],
-        #                 p=0.5)(image=img)['image']
+        img = A.OneOf([A.ShiftScaleRotate(
+                                shift_limit=0.05,
+                                scale_limit=0.02,
+                                rotate_limit=3,
+                                interpolation=cv2.INTER_LINEAR,
+                                border_mode=cv2.BORDER_CONSTANT,
+                                 value=0, mask_value=0,
+                                p=0.6),
+                        A.GridDistortion(num_steps=3, distort_limit=0.05,
+                            interpolation=1, border_mode=4, p=0.4)],
+                        p=0.5)(image=img)['image']
         
-        # img = A.HueSaturationValue(hue_shift_limit=4, 
-        #                 sat_shift_limit=4, val_shift_limit=4,  p=1)(image=img)['image']
 
-        # img = A.OneOf([A.RandomBrightness(limit=0.1, p=1), 
-        #             A.RandomContrast(limit=0.1, p=1),
-        #             A.RandomGamma(gamma_limit=(50, 100),p=1),
-        #             A.HueSaturationValue(hue_shift_limit=4, 
-        #                 sat_shift_limit=4, val_shift_limit=4,  p=1)], 
-        #             p=0.6)(image=img)['image']
+        img = A.OneOf([A.RandomBrightnessContrast(brightness_limit=0.3, 
+                                           contrast_limit=0.1, p=1),
+                    A.RandomGamma(gamma_limit=(50, 150),p=1),
+                    A.HueSaturationValue(hue_shift_limit=4, 
+                        sat_shift_limit=4, val_shift_limit=4,  p=1)], 
+                    p=0.6)(image=img)['image']
 
         
         # img = A.Resize(self.h,self.w,cv2.INTER_LANCZOS4,p=1)(image=img)['image']
-        # img = A.OneOf([A.GaussianBlur(blur_limit=(3,7), p=0.1),
-        #                 A.ISONoise(color_shift=(0.01, 0.05), intensity=(0.1, 0.5), p=0.5),
-        #                 A.GaussNoise(var_limit=(10.0, 50.0), mean=0, p=0.4)], 
-        #                 p=0.4)(image=img)['image']
+        img = A.OneOf([A.GaussianBlur(blur_limit=(1,3), p=0.1),
+                        A.ISONoise(color_shift=(0.01, 0.05), intensity=(0.1, 0.5), p=0.5),
+                        A.GaussNoise(var_limit=(10.0, 50.0), mean=0, p=0.4)], 
+                        p=0.4)(image=img)['image']
 
+        img = addLine(img, p=0.3)
+        img = randomPaste(img, p=0.2)
 
         
         img = Image.fromarray(img)
