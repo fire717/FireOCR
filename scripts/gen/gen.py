@@ -250,7 +250,9 @@ class ImgGenerator():
         else:
             imageFinal = imageTemp
 
-
+        if img_size[0]!=840:
+            print(img_size,self.img_size)
+            b
         if img_size[0]>self.img_size[0]:
             imageFinal = imageFinal.resize(self.img_size)
 
@@ -302,7 +304,8 @@ if __name__ == '__main__':
 
     img_gen1 = ImgGenerator(save_dir = save_dir,
                 sentence_gen_count = 5000,
-                exist_char='../../../data/train_balanced.txt', 
+                dicts = "../../../data/challange/mydict.txt",
+                exist_char='../../../data/challange/train_balanced.txt', 
                 min_cont=10000)
     label_path = os.path.join(save_dir, 'gen_train.txt')
     img_gen1.run(label_path)
@@ -314,7 +317,8 @@ if __name__ == '__main__':
     img_gen2 = ImgGenerator(save_dir = save_dir,
                 save_img = 'val_gen',
                 sentence_gen_count = 50,
-                exist_char='../../../data/val_balanced.txt', 
+                dicts = "../../../data/challange/mydict.txt",
+                exist_char='../../../data/challange/val_balanced.txt', 
                 min_cont=100)
     label_path = os.path.join(save_dir, 'gen_val.txt')
     img_gen2.run(label_path)

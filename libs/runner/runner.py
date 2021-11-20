@@ -422,8 +422,8 @@ class OCRRunner():
         count = 0
         batch_time = 0
         total_loss = 0
-        total_loss1 = 0
-        total_loss2 = 0
+        # total_loss1 = 0
+        # total_loss2 = 0
         for batch_idx, (data, target, lens) in enumerate(train_loader):
             one_batch_time_start = time.time()
 
@@ -448,7 +448,7 @@ class OCRRunner():
             output = self.model(data, mode='train')#.double()
             # print(output.shape)
             # b
-            input_lengths = torch.IntTensor([output[0].size(1)] * output[0].size(0)).to(self.device)
+            input_lengths = torch.IntTensor([output.size(1)] * output.size(0)).to(self.device)
             #torch.tensor([35],dtype=torch.int).detach().cuda()
             #print(input_lengths.size())
             # target_lengths = torch.tensor([len(x) for x in target],dtype=torch.int).cuda()
@@ -456,13 +456,13 @@ class OCRRunner():
             # print(output.shape, target, target_lengths)
 
 
-            loss1,loss2 = self.loss_func(output, target, input_lengths, target_lengths)
+            loss = self.loss_func(output, target, input_lengths, target_lengths)
             # print(loss.item())
             # b
-            loss = loss1+loss2
+            # loss = loss1+loss2
             total_loss += loss.item()
-            total_loss1 += loss1.item()
-            total_loss2 += loss2.item()
+            # total_loss1 += loss1.item()
+            # total_loss2 += loss2.item()
             if self.cfg['clip_gradient']:
                 clipGradient(self.optimizer, self.cfg['clip_gradient'])
 
@@ -500,8 +500,8 @@ class OCRRunner():
             # b
             train_acc =  correct / count
             train_loss = total_loss/count
-            train_loss1 = total_loss1/count
-            train_loss2 = total_loss2/count
+            # train_loss1 = total_loss1/count
+            # train_loss2 = total_loss2/count
             #print(train_acc)
             one_batch_time = time.time() - one_batch_time_start
             batch_time+=one_batch_time
@@ -514,13 +514,13 @@ class OCRRunner():
             print_epoch_total = str(self.cfg['epochs'])+''.join([' ']*(4-len(str(self.cfg['epochs']))))
             if batch_idx % self.cfg['log_interval'] == 0:
                 print('\r',
-                    '{}/{} [{}/{} ({:.0f}%)] - ETA: {}, loss: {:.4f}, loss1: {:.4f}, loss2: {:.4f}, acc: {:.4f}  LR: {:f}'.format(
+                    '{}/{} [{}/{} ({:.0f}%)] - ETA: {}, loss: {:.4f}, acc: {:.4f}  LR: {:f}'.format(
                     print_epoch, print_epoch_total, batch_idx * len(data), len(train_loader.dataset),
                     100. * batch_idx / len(train_loader), 
                     datetime.timedelta(seconds=eta),
                     train_loss,
-                    train_loss1,
-                    train_loss2,
+                    # train_loss1,
+                    # train_loss2,
                     train_acc,
                     self.optimizer.param_groups[0]["lr"]), 
                     end="",flush=True)

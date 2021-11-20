@@ -35,8 +35,7 @@ def main(read_path_list):
     print(np.min(total_w_list), np.max(total_w_list), np.mean(np.min(total_w_list),))
 
 if __name__ == '__main__':
-    read_path_list = ["../data/train/amount/images",
-                    "../data/train/date/images"]
+    read_path_list = ["gen/dataset/"]
 
 
     main(read_path_list)

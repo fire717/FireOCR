@@ -13,11 +13,11 @@ cfg = {
 
 
     ### Train Setting
-    'dict_path':"../data/mydict.txt",
+    'dict_path':"../data/challange/mydict.txt",
 
-    'img_dir':"../data/train_resize",
-    'train_label_path': "../data/train_balanced.txt",# if 'DIR' quale  train_path
-    'val_label_path':"../data/val_balanced.txt",
+    'img_dir':"../data/challange/train_all_resize",
+    'train_label_path': "../data/challange/train_bal_add_gen.txt",# if 'DIR' quale  train_path
+    'val_label_path':"../data/challange/val_bal_add_gen.txt",
     'pretrained':'', #path or '' output/densenet_e2_0.85521.pth
     'log_interval':10,  
     'try_to_train_items': 0,   # 0 means all
@@ -32,7 +32,7 @@ cfg = {
     ### Train Hyperparameters
     "img_size": [32, 840], # [h, w] 
     'learning_rate':0.01,
-    'batch_size':8,
+    'batch_size':32,
     'epochs':200,
     'optimizer':'SGD',  #Adam  SGD 
     'scheduler':'default-0.1-5', #default  SGDR-5-2  CVPR   step-4-0.8
@@ -59,10 +59,10 @@ cfg = {
     ### Test
     'show_heatmap':False,
     
-    'model_path':'output/dense_e80_0.91281.pth',#test model
+    'model_path':'output/dense_e69_0.83106.pth',#test model
 
-    'test_img_dir':"../../data/images",#test with label,get test acc
-    'test_label_path':"../../data/data_test.txt",
+    'test_img_dir':"../../data/challange/images",#test with label,get test acc
+    'test_label_path':"../../data/challange/data_test.txt",
 
     'pre_img_dir':"../data/challange/test/",#test without label, just show img result
     'use_TTA':0,

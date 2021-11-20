@@ -116,18 +116,18 @@ class DenseCNN(nn.Module):
         # print(x.shape)
         #Permute((2, 1, 3), name='permute')(x)
         # print('4',x)
-        out1 = self.dense(x)#[32, 105, 22]
-
-        if mode=='train':
-            #print(x.shape)#[32, 105, 768]
-            x = self.pool(x).squeeze()
-            # print(x.shape)
-            # b
+        x = self.dense(x)#[32, 105, 22]
+        return x
+        # if mode=='train':
+        #     #print(x.shape)#[32, 105, 768]
+        #     x = self.pool(x).squeeze()
+        #     # print(x.shape)
+        #     # b
             
-            out2 = self.task2(x)
-            return out1, out2
-        else:
-            return out1
+        #     out2 = self.task2(x)
+        #     return out1, out2
+        # else:
+        #     return out1
 
 
     def _initialize_weights(self):

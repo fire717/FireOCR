@@ -1,7 +1,7 @@
 import os,argparse
 import random
         
-from libs import initOCR, DenseCNN, SwinTransformer, OCRRunner, OCRData
+from libs import initOCR, DenseCNN, OCRRunner, OCRData
 
 from config import cfg
 import pandas as pd
@@ -16,8 +16,8 @@ def main(cfg):
 
     if cfg["model_name"]=='dense':
         model = DenseCNN(cfg["img_size"], cfg["class_number"]+1)
-    elif cfg["model_name"]=='swin':
-        model = SwinTransformer(img_size=cfg["img_size"], num_classes=cfg["class_number"]+1)
+    # elif cfg["model_name"]=='swin':
+    #     model = SwinTransformer(img_size=cfg["img_size"], num_classes=cfg["class_number"]+1)
     else:
         raise Exception("Unkown model_name: ", cfg["model_name"])
     

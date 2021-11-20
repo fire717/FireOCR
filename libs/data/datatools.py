@@ -35,7 +35,7 @@ def getFileNames(file_dir, tail_list=['.png','.jpg','.JPG','.PNG']):
 
 class TensorDatasetTrain(Dataset):
     _print_times = 0
-    def __init__(self, data, img_dir, img_size, transform=None, max_size=40):
+    def __init__(self, data, img_dir, img_size, transform=None, max_size=45):
         self.data = data
         self.img_dir = img_dir
         self.transform = transform
@@ -73,22 +73,37 @@ class TensorDatasetTrain(Dataset):
             one_batch = []
             now_w = 0
 
+        random.shuffle(self.data_list)
+
     def __getitem__(self, index):
         lines = self.data_list[index]
-        # print(lines)
+        # print('----',lines,len(lines))
         random.shuffle(lines)
-        imgs = np.ones((self.img_size[0],self.img_size[1],3),dtype=np.uint8)*128
+        
         labels = []
-        start_w = 0
+        
         if len(lines)==1:
             items = lines[0].strip().split(" ")
             img_name = items[0]
             w = int(items[1])
-            label = [int(x) for x in items[2:]]
-
-            imgs = cv2.imread(os.path.join(self.img_dir, img_name))
-            labels = label
+            if w==self.img_size[1]:
+                label = [int(x) for x in items[2:]]
+                # print(img_name,w,label,self.img_dir)
+                imgs = cv2.imread(os.path.join(self.img_dir, img_name))
+                # print(imgs.shape)
+                # b
+                labels = label
+            else:
+                imgs = np.ones((self.img_size[0],self.img_size[1],3),dtype=np.uint8)*128
+                labels = [int(x) for x in items[2:]]
+                img = cv2.imread(os.path.join(self.img_dir, img_name))
+                #print(w,img.shape,start_w)
+                start_w = random.randint(0,10)
+                imgs[:, start_w:start_w+w,:] = img
+            # print("1: ", lines, imgs.shape, np.array(labels).shape)
         else: 
+            start_w = 0
+            imgs = np.ones((self.img_size[0],self.img_size[1],3),dtype=np.uint8)*128
             for line in lines:
 
 
@@ -104,7 +119,7 @@ class TensorDatasetTrain(Dataset):
                 imgs[:, start_w:start_w+w,:] = img
                 start_w = start_w+w+10
                 # cv2.imwrite('t1.jpg', img)
-
+            # print("2: ", imgs.shape, np.array(labels).shape)
         # cv2.imwrite('t.jpg', imgs)
         # print(labels)
         # b
@@ -112,6 +127,9 @@ class TensorDatasetTrain(Dataset):
             imgs = self.transform(imgs)
 
         lens = len(labels)
+        
+        if lens > self.max_size:
+            print(lines, labels, len(lines), len(labels))
         assert lens <= self.max_size
         # print("lens: ",lens,labels)
         # print(self.max_size,lens,(self.max_size-lens))
