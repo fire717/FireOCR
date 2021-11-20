@@ -9,7 +9,7 @@ import random
 
 def parseLabel(label_path, img_dir, dict_path):
     
-    with open(dict_path,'r') as f:
+    with open(dict_path,'r', encoding='utf-8') as f:
         lines = f.readlines()
     dict_list = []
     for i,line in enumerate(lines[1:]):
@@ -17,13 +17,13 @@ def parseLabel(label_path, img_dir, dict_path):
     print(dict_list)
 
 
-    with open(label_path, 'r') as f:
+    with open(label_path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
 
     val_ratio = 0.04
 
-    f_train = open('train.txt', 'a')
-    f_val = open('val.txt', 'a')
+    f_train = open('../data/train.txt', 'a', encoding='utf-8')
+    f_val = open('../data/val.txt', 'a', encoding='utf-8')
 
     for line in lines[1:-1]:
         items = line.strip().split(": ")
@@ -56,10 +56,10 @@ def main(img_dir, label_path_list, dict_path):
 
 
 if __name__ == '__main__':
-    img_dir = "train_all_resize/"
-    label_path_list = ["train/amount/gt.json",
-                        "train/date/gt.json"]
-    dict_path = "mydict.txt"
+    img_dir = "../data/train_resize/"
+    label_path_list = ["../data/train/amount/gt.json",
+                        "../data/train/date/gt.json"]
+    dict_path = "../data/mydict.txt"
 
 
     main(img_dir, label_path_list, dict_path)

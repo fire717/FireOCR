@@ -1,7 +1,7 @@
 import os,argparse
 import random
         
-from libs import initOCR, DenseCNN, SwinTransformer, OCRRunner, OCRData
+from libs import initOCR, DenseCNN, OCRRunner, OCRData
 
 from config import cfg
 

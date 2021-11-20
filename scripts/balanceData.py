@@ -16,7 +16,7 @@ def countLines(lines):
 
 def main(read_path, save_path, min_count):
     #不足min_count的复制到min_count
-    with open(read_path, 'r') as f:
+    with open(read_path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
 
 
@@ -45,17 +45,17 @@ def main(read_path, save_path, min_count):
     d = countLines(new_lines)
     print("after: ",d)
     random.shuffle(new_lines)
-    with open(save_path, 'w') as f:
+    with open(save_path, 'w', encoding='utf-8') as f:
         for line in new_lines:
             f.write(line)
 
 
 if __name__ == '__main__':
-    read_path= "train.txt"
-    save_path = "train_balanced.txt"
+    read_path= "../data/train.txt"
+    save_path = "../data/train_balanced.txt"
 
     main(read_path, save_path,min_count=300)
 
-    read_path= "val.txt"
-    save_path = "val_balanced.txt"
+    read_path= "../data/val.txt"
+    save_path = "../data/val_balanced.txt"
     main(read_path, save_path,min_count=5)

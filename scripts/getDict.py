@@ -1,9 +1,9 @@
-
+#encoding:utf-8
 
 
 
 def parseJson(path):
-    with open(path, 'r') as f:
+    with open(path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
 
     word_list = []
@@ -26,15 +26,15 @@ def main(read_path_list, save_path):
                 total_dict.append(word)
     print("total: ", len(total_dict))
 
-    with open(save_path, 'w') as f:
+    with open(save_path, 'w', encoding='utf-8') as f:
         f.write(' \n')
         for word in total_dict:
             f.write(word+"\n")
 
 
 if __name__ == '__main__':
-    read_path_list = ["train/amount/gt.json",
-                    "train/date/gt.json"]
-    save_path = "mydict.txt"
+    read_path_list = ["../data/train/amount/gt.json",
+                    "../data/train/date/gt.json"]
+    save_path = "../data/mydict.txt"
 
     main(read_path_list, save_path)

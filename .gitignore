@@ -8,4 +8,5 @@ __pycache__
 
 /libs/__pycache__
 /output
+/scripts/gen/dataset
 

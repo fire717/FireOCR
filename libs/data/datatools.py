@@ -1,7 +1,7 @@
  
 from PIL import Image
 import numpy as np
-import pandas as pd
+# import pandas as pd
 import os
 import torch
 from torch.utils.data.dataset import Dataset
@@ -52,7 +52,11 @@ class TensorDatasetTrain(Dataset):
         for i in range(len(self.data)):
             items = self.data[i].strip().split(" ")
             w = int(items[1])
-            if now_w==0:
+            if w>self.img_size[1]:
+                raise Exception("img w > ", self.img_size)
+            elif w==self.img_size[1]:
+                self.data_list.append([self.data[i]])
+            elif now_w==0:
                 now_w = w
                 one_batch.append(self.data[i])
             elif now_w+w+10>self.img_size[1]:
@@ -76,21 +80,30 @@ class TensorDatasetTrain(Dataset):
         imgs = np.ones((self.img_size[0],self.img_size[1],3),dtype=np.uint8)*128
         labels = []
         start_w = 0
-        for line in lines:
-
-
-            items = line.strip().split(" ")
+        if len(lines)==1:
+            items = lines[0].strip().split(" ")
             img_name = items[0]
             w = int(items[1])
             label = [int(x) for x in items[2:]]
 
-            labels.extend(label)
+            imgs = cv2.imread(os.path.join(self.img_dir, img_name))
+            labels = label
+        else: 
+            for line in lines:
 
-            img = cv2.imread(os.path.join(self.img_dir, img_name))
-            #print(w,img.shape,start_w)
-            imgs[:, start_w:start_w+w,:] = img
-            start_w = start_w+w+10
-            # cv2.imwrite('t1.jpg', img)
+
+                items = line.strip().split(" ")
+                img_name = items[0]
+                w = int(items[1])
+                label = [int(x) for x in items[2:]]
+
+                labels.extend(label)
+
+                img = cv2.imread(os.path.join(self.img_dir, img_name))
+                #print(w,img.shape,start_w)
+                imgs[:, start_w:start_w+w,:] = img
+                start_w = start_w+w+10
+                # cv2.imwrite('t1.jpg', img)
 
         # cv2.imwrite('t.jpg', imgs)
         # print(labels)

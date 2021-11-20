@@ -2,7 +2,7 @@
 import os
 import random
 import numpy as np
-from sklearn.model_selection import KFold
+# from sklearn.model_selection import KFold
 
 import cv2
 from torchvision import transforms

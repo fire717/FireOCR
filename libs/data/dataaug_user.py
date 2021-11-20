@@ -1,7 +1,7 @@
  
 from PIL import Image
 import numpy as np
-import pandas as pd
+# import pandas as pd
 import os
 import torch
 from torch.utils.data.dataset import Dataset

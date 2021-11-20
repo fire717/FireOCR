@@ -126,7 +126,7 @@ class OCRRunner():
 
 
     def loadDict(self):
-        with open(self.cfg['dict_path'], 'r') as f:
+        with open(self.cfg['dict_path'], 'r', encoding='utf-8') as f:
             lines = f.readlines()
         for i,line in enumerate(lines):
             self.alphabet[i] = line.strip()
