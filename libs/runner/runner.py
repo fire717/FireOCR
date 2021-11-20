@@ -477,7 +477,7 @@ class OCRRunner():
             # print(output.detach().cpu().numpy())
             # b
             # print(output.shape)
-            pred,conf = decodeOutput(output[0].detach().cpu().numpy())
+            pred,conf = decodeOutput(output.detach().cpu().numpy())
             target = target.detach().cpu().numpy()
             # print(target, target.shape)
             lens = lens.detach().cpu().numpy()
@@ -486,8 +486,9 @@ class OCRRunner():
             # pre_lens = []
             for i in range(len(lens)):
                 # pre_lens.append(len(pred[i]))
+                # print("1111 ",target[start_id:start_id+lens[i]], pred[i])
                 if np.array_equal(target[start_id:start_id+lens[i]], pred[i]):
-                    # print("1111 ",target[:lens[i]], pred[i])
+                    # print("1111 "target[start_id:start_id+lens[i]], pred[i])
                     correct += 1
                 start_id+=lens[i]
             # pre_lens = torch.from_numpy(np.array(pre_lens)).to(self.device)

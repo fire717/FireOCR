@@ -4,7 +4,7 @@ cfg = {
     ### Global Set
     "model_name": "dense",  
     #dense/swin
-    'GPU_ID': '0',
+    'GPU_ID': '0',  #'' for cpu
     "class_number": 21,
 
     "random_seed":42,

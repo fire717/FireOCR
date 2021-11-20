@@ -26,7 +26,7 @@ class dense_block(nn.Module):
 
         convs = []
         for i in range(self.nb_layers):
-            convs.append(conv_block(inp+8*i,8).cuda())
+            convs.append(conv_block(inp+8*i,8))
         self.convs = nn.ModuleList(convs)
 
         # self.conv1 = conv_block(inp+8*0,8)
