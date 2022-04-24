@@ -62,15 +62,42 @@ def transition_block(inp, outp):
         nn.BatchNorm2d(inp),
         nn.ReLU(inplace=True),
         nn.Conv2d(inp, outp, kernel_size=1,stride=2,padding=0, bias=False),
+        nn.Dropout(0.2)
     )
 
 
+
+class TimeDistributed(nn.Module):
+    def __init__(self, module, batch_first=False):
+        super(TimeDistributed, self).__init__()
+        self.module = module
+        self.batch_first = batch_first
+
+    def forward(self, x):
+
+        if len(x.size()) <= 2:
+            return self.module(x)
+
+        # Squash samples and timesteps into a single axis
+        x_reshape = x.contiguous().view(-1, x.size(-1))  # (samples * timesteps, input_size)
+
+        y = self.module(x_reshape)
+
+        # We have to reshape Y
+        if self.batch_first:
+            y = y.contiguous().view(x.size(0), -1, y.size(-1))  # (samples, timesteps, output_size)
+        else:
+            y = y.view(-1, x.size(1), y.size(-1))  # (timesteps, samples, output_size)
+
+        return y
+
+
 class DenseCNN(nn.Module):
-    def __init__(self, input_size=(32,280), n_class=5000, _nb_filter = 64):
+    def __init__(self, input_size=(32,280), n_class=5990, _nb_filter = 64):
         super(DenseCNN, self).__init__()
 
 
-        self.conv1 = nn.Conv2d(3, _nb_filter,kernel_size=5,stride=2,padding=2, bias=False)
+        self.conv1 = nn.Conv2d(1, _nb_filter,kernel_size=5,stride=2,padding=2, bias=False)
         self.db1 = dense_block(8, _nb_filter,  8)
         self.tb1 = transition_block(128,128)
         self.db2 = dense_block(8, 128, 8)
@@ -134,14 +161,16 @@ class DenseCNN(nn.Module):
         # weight initialization
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out')
+                # nn.init.kaiming_normal_(m.weight, mode='fan_out')
+                nn.init.xavier_uniform_(m.weight)
                 if m.bias is not None:
                     nn.init.zeros_(m.bias)
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.ones_(m.weight)
                 nn.init.zeros_(m.bias)
             elif isinstance(m, nn.Linear):
-                nn.init.normal_(m.weight, 0, 0.01)
+                # nn.init.normal_(m.weight, 0, 0.01)
+                nn.init.xavier_uniform_(m.weight)
                 if m.bias is not None:
                     nn.init.zeros_(m.bias)
 
@@ -161,7 +190,7 @@ if __name__ == '__main__':
     import os
     os.environ["CUDA_VISIBLE_DEVICES"] = '1'
     model = DenseCNN().cuda()
-    print(summary(model, (3, 32, 840)))
+    print(summary(model, (1, 32, 280)))
 
 
     # dummy_input1 = torch.randn(1, 1, 32, 280).cuda()

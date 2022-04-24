@@ -12,7 +12,7 @@ class OCRLoss(nn.Module):
         super().__init__()
 
         self.device = device
-        self.ctc_loss = nn.CTCLoss(blank=blank_id, reduction='mean')
+        self.ctc_loss = nn.CTCLoss(blank=blank_id, reduction='sum')
 
 
     def l1(self, pre,target):

@@ -98,7 +98,7 @@ class OCRRunner():
         self.model = model.to(self.device)
 
 
-
+        # self.scaler = torch.cuda.amp.GradScaler()
         ############################################################
         
 
@@ -445,6 +445,7 @@ class OCRRunner():
             data = data.to(self.device)
 
             # print(data[0,0,10:30,20:50])
+            # with torch.cuda.amp.autocast():
             output = self.model(data, mode='train')#.double()
             # print(output.shape)
             # b
@@ -471,7 +472,9 @@ class OCRRunner():
             self.optimizer.zero_grad()#把梯度置零
             loss.backward() #计算梯度
             self.optimizer.step() #更新参数
-
+            # self.scaler.scale(loss).backward()
+            # self.scaler.step(self.optimizer)
+            # self.scaler.update()
 
             ### train acc
             # print(output.detach().cpu().numpy())

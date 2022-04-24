@@ -13,7 +13,7 @@ def getSchedu(schedu, optimizer):
                     mode='max', factor=factor, patience=patience,min_lr=0.000001)
     elif 'step' in schedu:
         step_size = int(schedu.strip().split('-')[1])
-        gamma = int(schedu.strip().split('-')[2])
+        gamma = float(schedu.strip().split('-')[2])
         scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma, last_epoch=-1)
     elif 'SGDR' in schedu: 
         T_0 = int(schedu.strip().split('-')[1])

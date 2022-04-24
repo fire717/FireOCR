@@ -5,7 +5,7 @@ cfg = {
     "model_name": "dense",  
     #dense/swin
     'GPU_ID': '0',  #'' for cpu
-    "class_number": 21,
+    "class_number": 5990,
 
     "random_seed":42,
     "cfg_verbose":True,
@@ -13,11 +13,11 @@ cfg = {
 
 
     ### Train Setting
-    'dict_path':"../data/challange/mydict.txt",
+    'dict_path':"../data/char_std_5990.txt",
 
-    'img_dir':"../data/challange/train_all_resize",
-    'train_label_path': "../data/challange/train_bal_add_gen.txt",# if 'DIR' quale  train_path
-    'val_label_path':"../data/challange/val_bal_add_gen.txt",
+    'img_dir':"../data/images",
+    'train_label_path': "../data/data_train_part.txt",# if 'DIR' quale  train_path
+    'val_label_path':"../data/data_test_part.txt",
     'pretrained':'', #path or '' output/densenet_e2_0.85521.pth
     'log_interval':10,  
     'try_to_train_items': 0,   # 0 means all
@@ -28,17 +28,18 @@ cfg = {
     'metrics': ['acc'], # default is acc,  can add F1  ...
     "loss": 'CTC', # default or '' means CE, can other be Focalloss-1, BCE...
 
+    "load_in_mem": True, # load all img in mem
 
     ### Train Hyperparameters
-    "img_size": [32, 840], # [h, w] 
-    'learning_rate':0.01,
-    'batch_size':32,
-    'epochs':200,
-    'optimizer':'SGD',  #Adam  SGD 
-    'scheduler':'default-0.1-5', #default  SGDR-5-2  CVPR   step-4-0.8
+    "img_size": [32, 280], # [h, w] 
+    'learning_rate':0.0005,
+    'batch_size':128,
+    'epochs':10,
+    'optimizer':'Adam',  #Adam  SGD 
+    'scheduler':'step-1-0.4', #default  SGDR-5-2  CVPR   step-1-0.4
 
     'warmup_epoch':0, # 
-    'weight_decay' : 0.0001,
+    'weight_decay' : 0.000,
     # "k_flod":5,
     # 'start_fold':0,
     'early_stop_patient':16,

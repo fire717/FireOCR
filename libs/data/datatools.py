@@ -17,6 +17,8 @@ import platform
 from libs.data.dataaug_user import TrainDataAug, TestDataAug
 
 
+
+
 ##### Common
 def getFileNames(file_dir, tail_list=['.png','.jpg','.JPG','.PNG']): 
         L=[] 
@@ -35,101 +37,56 @@ def getFileNames(file_dir, tail_list=['.png','.jpg','.JPG','.PNG']):
 
 class TensorDatasetTrain(Dataset):
     _print_times = 0
-    def __init__(self, data, img_dir, img_size, transform=None, max_size=45):
+    def __init__(self, data, img_dir, img_size, load_in_mem= False, transform=None, max_size=45):
         self.data = data
         self.img_dir = img_dir
         self.transform = transform
         self.img_size = img_size
         self.max_size = max_size
+        self.load_in_mem = load_in_mem
 
-        self.data_list = []
-        self.makeDataGroup()
-        # print("train data: ", len(self.data), len(self.data_list))
+        if self.load_in_mem:
+            self.data_dict = {}
+            self.readData()
+            print("readData in mem: ", len(self.data_dict))
 
-    def makeDataGroup(self):
-        one_batch = []
-        now_w = 0
-        for i in range(len(self.data)):
-            items = self.data[i].strip().split(" ")
-            w = int(items[1])
-            if w>self.img_size[1]:
-                raise Exception("img w > ", self.img_size)
-            elif w==self.img_size[1]:
-                self.data_list.append([self.data[i]])
-            elif now_w==0:
-                now_w = w
-                one_batch.append(self.data[i])
-            elif now_w+w+10>self.img_size[1]:
-                #拼接间隔10像素
-                self.data_list.append(one_batch)
-                one_batch = []
-                now_w = 0
-            else:
-                one_batch.append(self.data[i])
-                now_w = now_w+w+10
+    def readData(self):
+        for data in self.data:
+            items = data.strip().split(" ")
+            img_name = items[0]
+            img = cv2.imread(os.path.join(self.img_dir, img_name), 0)
+            self.data_dict[img_name] = img
 
-        if len(one_batch)>0:
-            self.data_list.append(one_batch)
-            one_batch = []
-            now_w = 0
-
-        random.shuffle(self.data_list)
 
     def __getitem__(self, index):
-        lines = self.data_list[index]
-        # print('----',lines,len(lines))
-        random.shuffle(lines)
+        data = self.data[index]
+
+
+        items = data.strip().split(" ")
+        img_name = items[0]
+        label = [int(x) for x in items[1:]]
+        if self.load_in_mem:
+            img = self.data_dict[img_name]
+        else:
+            img = cv2.imread(os.path.join(self.img_dir, img_name), 0)
         
-        labels = []
-        
-        if len(lines)==1:
-            items = lines[0].strip().split(" ")
-            img_name = items[0]
-            w = int(items[1])
-            if w==self.img_size[1]:
-                label = [int(x) for x in items[2:]]
-                # print(img_name,w,label,self.img_dir)
-                imgs = cv2.imread(os.path.join(self.img_dir, img_name))
-                # print(imgs.shape)
-                # b
-                labels = label
-            else:
-                imgs = np.ones((self.img_size[0],self.img_size[1],3),dtype=np.uint8)*128
-                labels = [int(x) for x in items[2:]]
-                img = cv2.imread(os.path.join(self.img_dir, img_name))
-                #print(w,img.shape,start_w)
-                start_w = random.randint(0,10)
-                imgs[:, start_w:start_w+w,:] = img
-            # print("1: ", lines, imgs.shape, np.array(labels).shape)
-        else: 
-            start_w = 0
+        h,w = img.shape[:2]
+
+        if w!=self.img_size[1]:
             imgs = np.ones((self.img_size[0],self.img_size[1],3),dtype=np.uint8)*128
-            for line in lines:
 
+            start_w = random.randint(0,10)
+            imgs[:, start_w:start_w+w,:] = img
+        else:
+            imgs = img
 
-                items = line.strip().split(" ")
-                img_name = items[0]
-                w = int(items[1])
-                label = [int(x) for x in items[2:]]
-
-                labels.extend(label)
-
-                img = cv2.imread(os.path.join(self.img_dir, img_name))
-                #print(w,img.shape,start_w)
-                imgs[:, start_w:start_w+w,:] = img
-                start_w = start_w+w+10
-                # cv2.imwrite('t1.jpg', img)
-            # print("2: ", imgs.shape, np.array(labels).shape)
-        # cv2.imwrite('t.jpg', imgs)
-        # print(labels)
-        # b
         if self.transform is not None:
             imgs = self.transform(imgs)
 
-        lens = len(labels)
+        lens = len(label)
         
         if lens > self.max_size:
-            print(lines, labels, len(lines), len(labels))
+            print(data, label, len(lines), len(label))
         assert lens <= self.max_size
         # print("lens: ",lens,labels)
         # print(self.max_size,lens,(self.max_size-lens))
@@ -138,10 +95,10 @@ class TensorDatasetTrain(Dataset):
         # print(labels+[-1]*(self.max_size-lens))
         #labels = labels+[-1]*(self.max_size-lens)
         # print(imgs.shape, np.array(labels).shape)
-        return imgs, np.array(labels), lens#, self.data_list[index]
+        return imgs, np.array(label), lens#, self.data_list[index]
         
     def __len__(self):
-        return len(self.data_list)
+        return len(self.data)
 
 
 class TensorDatasetVal(Dataset):
@@ -156,9 +113,9 @@ class TensorDatasetVal(Dataset):
 
         items = self.data[index].strip().split(" ")
         img_name = items[0]
-        label = np.array([int(x) for x in items[2:]])
+        label = np.array([int(x) for x in items[1:]])
 
-        img = cv2.imread(os.path.join(self.img_dir, img_name))
+        img = cv2.imread(os.path.join(self.img_dir, img_name), 0)
 
         if self.transform is not None:
             img = self.transform(img)
@@ -179,7 +136,7 @@ class TensorDatasetTest(Dataset):
 
     def __getitem__(self, index):
 
-        img = cv2.imread(self.data[index])
+        img = cv2.imread(self.data[index], '0')
 
         if self.transform is not None:
             img = self.transform(img)
@@ -248,6 +205,7 @@ def getDataLoader(mode, input_data, cfg):
                                         TensorDatasetTrain(input_data[0],
                                             img_dir,
                                             cfg['img_size'], 
+                                            cfg["load_in_mem"],
                                             transforms.Compose([
                                                 data_aug_train,
                                                 transforms.ToTensor(),
