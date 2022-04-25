@@ -109,21 +109,25 @@ class DenseCNN(nn.Module):
         self.dense = torch.nn.Linear(768,n_class)
 
         
-        self.pool =  nn.AdaptiveMaxPool1d(1)
-        self.task2 = torch.nn.Linear(105,1)
+        # self.pool =  nn.AdaptiveMaxPool1d(1)
+        # self.task2 = torch.nn.Linear(105,1)
 
         self._initialize_weights()
 
 
     def forward(self, x, mode='train'):
-        x = self.conv1(x)
-        
-        x = self.db1(x)
-        x = self.tb1(x)
-        x = self.db2(x)
-        x = self.tb2(x)
-        x = self.db3(x)
-        
+        x = self.conv1(x)#[2, 64, 16, 140]
+        # print("1: ", x.shape)
+        x = self.db1(x)#[2, 128, 16, 140]
+        # print("2: ", x.shape)
+        x = self.tb1(x)#[2, 128, 8, 70]
+        # print("3: ", x.shape)
+        x = self.db2(x)#[2, 192, 8, 70]
+        # print("4: ", x.shape)
+        x = self.tb2(x)#[2, 128, 4, 35]
+        # print("5: ", x.shape)
+        x = self.db3(x)#[2, 192, 4, 35]
+        # print("6: ", x.shape)
         # print(x.shape)
 
         x = self.bn1(x)
@@ -131,19 +135,14 @@ class DenseCNN(nn.Module):
         x = self.relu1(x)
 
 
-        x = x.permute(0, 3, 1, 2)
-        # print(x.shape)
-        # b
-        
-        # print(x.shape)
-        # print('2',x)
-        # print(x.shape)
-        # print('3',x)
-        x = x.view(x.shape[0], x.shape[1], -1)
-        # print(x.shape)
-        #Permute((2, 1, 3), name='permute')(x)
-        # print('4',x)
-        x = self.dense(x)#[32, 105, 22]
+        x = x.permute(0, 3, 1, 2)#[2, 35, 192, 4]
+        # print("7: ", x.shape)
+
+        x = x.view(x.shape[0], x.shape[1], -1)#[2, 35, 768]
+        # print("8: ", x.shape)
+
+        x = self.dense(x)#[2, 35, 5990]
+        # print("9: ", x.shape)
         return x
         # if mode=='train':
         #     #print(x.shape)#[32, 105, 768]

@@ -54,7 +54,7 @@ class TensorDatasetTrain(Dataset):
         for data in self.data:
             items = data.strip().split(" ")
             img_name = items[0]
-            img = cv2.imread(os.path.join(self.img_dir, img_name), 0)
+            img = cv2.imread(os.path.join(self.img_dir, img_name))
             self.data_dict[img_name] = img
 
 
@@ -68,7 +68,7 @@ class TensorDatasetTrain(Dataset):
         if self.load_in_mem:
             img = self.data_dict[img_name]
         else:
-            img = cv2.imread(os.path.join(self.img_dir, img_name), 0)
+            img = cv2.imread(os.path.join(self.img_dir, img_name))
         
         h,w = img.shape[:2]
 
@@ -115,7 +115,7 @@ class TensorDatasetVal(Dataset):
         img_name = items[0]
         label = np.array([int(x) for x in items[1:]])
 
-        img = cv2.imread(os.path.join(self.img_dir, img_name), 0)
+        img = cv2.imread(os.path.join(self.img_dir, img_name))
 
         if self.transform is not None:
             img = self.transform(img)
@@ -136,7 +136,7 @@ class TensorDatasetTest(Dataset):
 
     def __getitem__(self, index):
 
-        img = cv2.imread(self.data[index], '0')
+        img = cv2.imread(self.data[index])
 
         if self.transform is not None:
             img = self.transform(img)

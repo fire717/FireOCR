@@ -2,9 +2,9 @@
 
 cfg = {
     ### Global Set
-    "model_name": "dense",  
-    #dense/swin
-    'GPU_ID': '0',  #'' for cpu
+    "model_name": "mobilenetv2",  
+    #dense/swin/mobilenetv2
+    'GPU_ID': '1',  #'' for cpu
     "class_number": 5990,
 
     "random_seed":42,
@@ -15,9 +15,9 @@ cfg = {
     ### Train Setting
     'dict_path':"../data/char_std_5990.txt",
 
-    'img_dir':"../data/images",
-    'train_label_path': "../data/data_train_part.txt",# if 'DIR' quale  train_path
-    'val_label_path':"../data/data_test_part.txt",
+    'img_dir':"../data/",
+    'train_label_path': "../data/gen_train.txt",# if 'DIR' quale  train_path
+    'val_label_path':"../data/gen_val.txt",
     'pretrained':'', #path or '' output/densenet_e2_0.85521.pth
     'log_interval':10,  
     'try_to_train_items': 0,   # 0 means all
@@ -28,7 +28,7 @@ cfg = {
     'metrics': ['acc'], # default is acc,  can add F1  ...
     "loss": 'CTC', # default or '' means CE, can other be Focalloss-1, BCE...
 
-    "load_in_mem": True, # load all img in mem
+    "load_in_mem": False, # load all img in mem
 
     ### Train Hyperparameters
     "img_size": [32, 280], # [h, w] 

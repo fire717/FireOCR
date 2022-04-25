@@ -1,7 +1,7 @@
 import os,argparse
 import random
         
-from libs import initOCR, DenseCNN, OCRRunner, OCRData
+from libs import *
 
 from config import cfg
 
@@ -16,6 +16,8 @@ def main(cfg):
 
     if cfg["model_name"]=='dense':
         model = DenseCNN(cfg["img_size"], cfg["class_number"]+1)
+    elif cfg["model_name"]=='mobilenetv2':
+        model = MobileNetV2(cfg["class_number"]+1)
     elif cfg["model_name"]=='swin':
         model = SwinTransformer(img_size=cfg["img_size"], num_classes=cfg["class_number"]+1)
     else:
@@ -29,6 +31,9 @@ def main(cfg):
 
 
     runner = OCRRunner(cfg, model)
+
+    runner.modelSave("output/mb2.pth")
+    b
     if cfg['pretrained']:
         runner.modelLoad(cfg['pretrained'])
         print("load :", cfg['pretrained'])
