@@ -17,14 +17,14 @@ import platform
 
 
 ###### 1.Data aug
-def addLine(img, p=1):
+def addLine(img, p=0.2):
     if random.random()<p:
         h,w = img.shape[:2]
 
         color = random.randint(0,70)
         # thickness = random.randint(1,1)
 
-        y = random.randint(1,h-1)
+        y = random.randint(1,h-2)
         #print(y)
         cv2.line(img, (0,y), (w-1,y), (color,color,color), 1)
     return img
@@ -58,6 +58,25 @@ def randomPaste(img, p=1):
 
 
     return img
+
+
+def randomResize(img, ratio=0.6):
+    if random.random()<ratio:
+        resize_ratio = random.random()*0.5+0.3
+        
+        h,w = img.shape[:2]
+        if h<30:
+            return img
+        resize_h = int(h*resize_ratio)
+        resize_w = int(w*resize_ratio)
+
+        img = cv2.resize(img, (resize_w, resize_h))
+        #random.choice(resize_type)
+        img = cv2.resize(img, (w,h))
+
+    return img
+
+
 class TrainDataAug:
     def __init__(self, img_size):
         self.h = img_size[0]
@@ -74,9 +93,9 @@ class TrainDataAug:
 
         # img = A.RandomBrightnessContrast(brightness_limit=0.1, 
         #                             contrast_limit=0.1, p=0.5)(image=img)['image']
+        img = randomResize(img)
 
-
-       # img = A.GaussNoise(var_limit=(2.0, 5.0), mean=0, p=0.5)(image=img)['image']
+        img = A.GaussNoise(var_limit=(2.0, 5.0), mean=0, p=0.5)(image=img)['image']
 
         # img = A.RGBShift(r_shift_limit=50,
         #                     g_shift_limit=50,
@@ -122,6 +141,9 @@ class TestDataAug:
         # img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
         if len(img.shape)==3:
             img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
+
+        img = randomResize(img)
 
 
         h,w = img.shape[:2]

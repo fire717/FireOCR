@@ -212,7 +212,7 @@ def getDataLoader(mode, input_data, cfg):
                                 transforms.Compose([
                                     data_aug_test,
                                     transforms.ToTensor(),
-                                    transforms.Normalize(0.5,1)
+                                    # transforms.Normalize(0.5,1)
                                 ])
                 ), batch_size=1, shuffle=False, 
                 num_workers=cfg['num_workers'], pin_memory=cfg['pin_memory']
@@ -233,7 +233,7 @@ def getDataLoader(mode, input_data, cfg):
                                             transforms.Compose([
                                                 data_aug_train,
                                                 transforms.ToTensor(),
-                                                transforms.Normalize(0.5,1)
+                                                # transforms.Normalize(0.5,1)
                                         ])),
                                 batch_size=cfg['batch_size'], 
                                 shuffle=True, 
@@ -248,7 +248,7 @@ def getDataLoader(mode, input_data, cfg):
                                             transforms.Compose([
                                                 data_aug_test,
                                                 transforms.ToTensor(),
-                                                transforms.Normalize(0.5,1)
+                                                # transforms.Normalize(0.5,1)
                                         ])),
                                 batch_size=1, 
                                 shuffle=False, 
@@ -271,7 +271,7 @@ def getDataLoader(mode, input_data, cfg):
                                             transforms.Compose([
                                                 data_aug_test,
                                                 transforms.ToTensor(),
-                                                transforms.Normalize(0.5,1)
+                                                # transforms.Normalize(0.5,1)
                                         ])),
                                 batch_size=cfg['batch_size'], shuffle=False, num_workers=cfg['num_workers'], pin_memory=cfg['pin_memory'])
 
