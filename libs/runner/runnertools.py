@@ -21,6 +21,11 @@ def getSchedu(schedu, optimizer):
         scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer,
                                                              T_0=T_0, 
                                                             T_mult=T_mult)
+    elif 'multi' in schedu:
+        milestones = [int(x) for x in schedu.strip().split('-')[1].split(',')]
+        gamma = float(schedu.strip().split('-')[2])
+        scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones, gamma=gamma, last_epoch=-1)
+    
     else:
         raise Exception("Unkown getSchedu: ", schedu)
     return scheduler
@@ -28,6 +33,8 @@ def getSchedu(schedu, optimizer):
 def getOptimizer(optims, model, learning_rate, weight_decay):
     if optims=='Adam':
         optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+    elif optims=='AdamW':
+        optimizer = optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
     elif optims=='SGD':
         optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=0.9, weight_decay=weight_decay)
     else:

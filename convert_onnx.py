@@ -35,14 +35,14 @@ def main(cfg):
     runner = OCRRunner(cfg, model)
 
     #print(model)
-    runner.modelLoad("output/mb2.pth")
+    runner.modelLoad("output/mobilenetv2_e9_0.96187.pth")
 
 
     runner.model.eval()
     runner.model.to("cuda")
 
     #data type nchw
-    dummy_input1 = torch.randn(1, 1, 32, 280).to("cuda")
+    dummy_input1 = torch.randn(1, 1, 40, 350).to("cuda")
     input_name = "input1" #自己命名
     output_name = "output1"
     # torch.onnx.export(model, (dummy_input1, dummy_input2, dummy_input3), "C3AE.onnx", verbose=True, input_names=input_names, output_names=output_names)

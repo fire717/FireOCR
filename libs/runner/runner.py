@@ -166,11 +166,11 @@ class OCRRunner():
                 data = data.to(self.device)
 
                 # print(data.shape)
-                output = self.model(data, mode='test').double()
-
+                output = self.model(data).double()
+                # print(output[0][:20])
                 # print(output.shape, output)
                 pred,conf = decodeOutput(output.detach().cpu().numpy())
-                # print(pred)
+                # print(pred[0][:20])
                 for i in range(len(output)):
                     # print(img_names[i], ''.join([self.alphabet[x] for x in pred[i]]), conf)
                 # b
@@ -446,7 +446,7 @@ class OCRRunner():
 
             # print(data[0,0,10:30,20:50])
             # with torch.cuda.amp.autocast():
-            output = self.model(data, mode='train')#.double()
+            output = self.model(data)#.double()
             # print(output.shape)
             # b
             input_lengths = torch.IntTensor([output.size(1)] * output.size(0)).to(self.device)
@@ -563,8 +563,8 @@ class OCRRunner():
             labels = []
             for (data, target, img_names) in val_loader:
                 data, target = data.to(self.device), target.to(self.device)
-
-                output = self.model(data, mode='test')#.double()
+                
+                output = self.model(data)#.double()
 
 
                 input_lengths = torch.IntTensor([output.size(1)] * output.size(0))

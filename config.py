@@ -16,8 +16,8 @@ cfg = {
     'dict_path':"../data/char_std_5990.txt",
 
     'img_dir':"../data/",
-    'train_label_path': "../data/gen_train.txt",# if 'DIR' quale  train_path
-    'val_label_path':"../data/gen_val.txt",
+    'train_label_path': "../data/all_train.txt",# if 'DIR' quale  train_path
+    'val_label_path':"../data/all_val.txt",
     'pretrained':'', #path or '' output/densenet_e2_0.85521.pth
     'log_interval':10,  
     'try_to_train_items': 0,   # 0 means all
@@ -28,16 +28,16 @@ cfg = {
     'metrics': ['acc'], # default is acc,  can add F1  ...
     "loss": 'CTC', # default or '' means CE, can other be Focalloss-1, BCE...
 
-    "load_in_mem": False, # load all img in mem
+    "load_in_mem": False, # load all img in mem  False
 
     ### Train Hyperparameters
-    "img_size": [32, 280], # [h, w] 
-    'learning_rate':0.0005,
-    'batch_size':128,
+    "img_size": [40, 350], # [h, w] 
+    'learning_rate':0.001,
+    'batch_size':256,
     'epochs':10,
     'optimizer':'Adam',  #Adam  SGD 
-    'scheduler':'step-1-0.4', #default  SGDR-5-2  CVPR   step-1-0.4
-
+    'scheduler':'multi-4,8-0.1', #default  SGDR-5-2  CVPR   step-1-0.4
+    #step-1-0.4
     'warmup_epoch':0, # 
     'weight_decay' : 0.000,
     # "k_flod":5,
@@ -60,12 +60,12 @@ cfg = {
     ### Test
     'show_heatmap':False,
     
-    'model_path':'output/dense_e69_0.83106.pth',#test model
+    'model_path':'output/mobilenetv2_e9_0.96187.pth',#test model
 
-    'test_img_dir':"../../data/challange/images",#test with label,get test acc
+    'test_img_dir':"../../data/test1",#test with label,get test acc
     'test_label_path':"../../data/challange/data_test.txt",
 
-    'pre_img_dir':"../data/challange/test/",#test without label, just show img result
+    'pre_img_dir':"output/",#test without label, just show img result   ../data/test2/
     'use_TTA':0,
     'test_batch_size': 1,
     

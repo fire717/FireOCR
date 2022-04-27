@@ -72,36 +72,30 @@ class TrainDataAug:
         # min_size = max(img.shape[:2])
 
 
-        img = A.RandomBrightnessContrast(brightness_limit=0.1, 
-                                    contrast_limit=0.1, p=0.5)(image=img)['image']
+        # img = A.RandomBrightnessContrast(brightness_limit=0.1, 
+        #                             contrast_limit=0.1, p=0.5)(image=img)['image']
 
-        # rd1 = random.random()
-        # if rd1<0.99:
-        # img = A.OneOf([A.Blur(blur_limit=5, p=1),
-        #                 A.MotionBlur(blur_limit=5, p=1),
-        #                 A.GaussianBlur(blur_limit=(3,5), p=1.0)], 
-        #                 p=0.5)(image=img)['image']
 
-        img = A.GaussNoise(var_limit=(2.0, 5.0), mean=0, p=0.5)(image=img)['image']
+       # img = A.GaussNoise(var_limit=(2.0, 5.0), mean=0, p=0.5)(image=img)['image']
 
-        img = A.RGBShift(r_shift_limit=50,
-                            g_shift_limit=50,
-                            b_shift_limit=50,
-                            p=0.3)(image=img)['image']
+        # img = A.RGBShift(r_shift_limit=50,
+        #                     g_shift_limit=50,
+        #                     b_shift_limit=50,
+        #                     p=0.3)(image=img)['image']
 
         
-        img = A.ShiftScaleRotate(
-                                    shift_limit=0.02,
-                                    scale_limit=0.04,
-                                    rotate_limit=0,
-                                    interpolation=cv2.INTER_LINEAR,
-                                    border_mode=cv2.BORDER_CONSTANT,
-                                     value=(0,0,0), mask_value=0,
-                                    p=0.5)(image=img)['image']
+        # img = A.ShiftScaleRotate(
+        #                             shift_limit=0.02,
+        #                             scale_limit=0.04,
+        #                             rotate_limit=0,
+        #                             interpolation=cv2.INTER_LINEAR,
+        #                             border_mode=cv2.BORDER_CONSTANT,
+        #                              value=(0,0,0), mask_value=0,
+        #                             p=0.5)(image=img)['image']
 
-        img = A.GridDistortion(num_steps=5, distort_limit=0.2,
-                            interpolation=1, border_mode=0, 
-                            p=0.3)(image=img)['image']
+        # img = A.GridDistortion(num_steps=5, distort_limit=0.2,
+        #                     interpolation=1, border_mode=0, 
+        #                     p=0.3)(image=img)['image']
 
 
         # img = addLine(img, p=0.3)
@@ -116,7 +110,7 @@ class TrainDataAug:
 
 
 class TestDataAug:
-    def __init__(self, img_size, resize_h=32):
+    def __init__(self, img_size, resize_h=40):
         self.h = img_size[0]
         self.w = img_size[1]
         self.resize_h = resize_h
@@ -134,6 +128,18 @@ class TestDataAug:
         resize_w = int(w*self.resize_h/h)+1
         img = A.Resize(self.resize_h,resize_w,p=1)(image=img)['image']
         img = Image.fromarray(img)
+
+        # img = np.transpose(img,(2,0,1))
+        # img = np.array(img, dtype=np.float32)
+        # print(img[:,0])
+
+        # img /= 255.
+        # img = (img-0.5)
+        # print(img[:,0])
+        # img = np.reshape(img, (1, img.shape[0], img.shape[1]))
+        # img = torch.from_numpy(img)
+        # print(img.shape)
+        # b
         return img
 
 

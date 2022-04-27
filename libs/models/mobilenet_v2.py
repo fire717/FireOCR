@@ -115,17 +115,25 @@ class MobileNetV2(nn.Module):
         #         input_channel = output_channel
         self.f1 = nn.Sequential(InvertedResidual(32, 16, 1, 1))
         self.f2 = nn.Sequential(InvertedResidual(16, 24, 2, 6),
-                                InvertedResidual(24, 24, 1, 6))
+                                InvertedResidual(24, 24, 1, 6),
+                                # nn.Dropout(0.2)
+                                )
         self.f3 = nn.Sequential(InvertedResidual(24, 32, 2, 6),
                                 InvertedResidual(32, 32, 1, 6),
-                                InvertedResidual(32, 32, 1, 6))
+                                InvertedResidual(32, 32, 1, 6),
+                                # nn.Dropout(0.2)
+                                )
         self.f4 = nn.Sequential(InvertedResidual(32, 64, 1, 6),
                                 InvertedResidual(64, 64, 1, 6),
                                 InvertedResidual(64, 64, 1, 6),
-                                InvertedResidual(64, 64, 1, 6))
+                                InvertedResidual(64, 64, 1, 6),
+                                # nn.Dropout(0.2)
+                                )
         self.f5 = nn.Sequential(InvertedResidual(64, 96, 1, 6),
                                 InvertedResidual(96, 96, 1, 6),
-                                InvertedResidual(96, 96, 1, 6))
+                                InvertedResidual(96, 96, 1, 6),
+                                # nn.Dropout(0.2)
+                                )
         # self.f6 = nn.Sequential(InvertedResidual(96, 160, 1, 6),
         #                         InvertedResidual(160, 160, 1, 6),
         #                         InvertedResidual(160, 160, 1, 6))
@@ -160,7 +168,7 @@ class MobileNetV2(nn.Module):
 
         self.conv2 = conv_1x1_bn(96, 192)
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.classifier = nn.Linear(192*4, num_classes)
+        self.classifier = nn.Linear(960, num_classes)#192*4
 
         self._initialize_weights()
 

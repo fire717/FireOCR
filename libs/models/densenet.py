@@ -115,7 +115,7 @@ class DenseCNN(nn.Module):
         self._initialize_weights()
 
 
-    def forward(self, x, mode='train'):
+    def forward(self, x):
         x = self.conv1(x)#[2, 64, 16, 140]
         # print("1: ", x.shape)
         x = self.db1(x)#[2, 128, 16, 140]

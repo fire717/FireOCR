@@ -1,7 +1,7 @@
 import os,argparse
 import random
         
-from libs import initOCR, DenseCNN, OCRRunner, OCRData
+from libs import *
 
 from config import cfg
 import pandas as pd
@@ -16,8 +16,10 @@ def main(cfg):
 
     if cfg["model_name"]=='dense':
         model = DenseCNN(cfg["img_size"], cfg["class_number"]+1)
-    # elif cfg["model_name"]=='swin':
-    #     model = SwinTransformer(img_size=cfg["img_size"], num_classes=cfg["class_number"]+1)
+    elif cfg["model_name"]=='mobilenetv2':
+        model = MobileNetV2(cfg["class_number"]+1)
+    elif cfg["model_name"]=='swin':
+        model = SwinTransformer(img_size=cfg["img_size"], num_classes=cfg["class_number"]+1)
     else:
         raise Exception("Unkown model_name: ", cfg["model_name"])
     
@@ -38,10 +40,12 @@ def main(cfg):
 
     res_dict = runner.predict(test_loader)
     print(len(res_dict))
+    for k,v in res_dict.items():
+        print(k,v)
     
-    with open(r"answer.json",'w') as f:  
-        json.dump(res_dict, f, indent=2, ensure_ascii=False)     
-    print('done')
+    # with open(r"answer.json",'w') as f:  
+    #     json.dump(res_dict, f, indent=2, ensure_ascii=False)     
+    # print('done')
 
 if __name__ == '__main__':
     main(cfg)

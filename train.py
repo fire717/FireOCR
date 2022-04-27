@@ -32,8 +32,8 @@ def main(cfg):
 
     runner = OCRRunner(cfg, model)
 
-    runner.modelSave("output/mb2.pth")
-    b
+    # runner.modelSave("output/mb2.pth")
+    # b
     if cfg['pretrained']:
         runner.modelLoad(cfg['pretrained'])
         print("load :", cfg['pretrained'])

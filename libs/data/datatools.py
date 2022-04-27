@@ -51,11 +51,17 @@ class TensorDatasetTrain(Dataset):
             print("readData in mem: ", len(self.data_dict))
 
     def readData(self):
-        for data in self.data:
+        for i,data in enumerate(self.data):
+            print('\r',
+                    '{}/{} '.format(
+                    i, len(self.data)), 
+                    end="",flush=True)
+
             items = data.strip().split(" ")
             img_name = items[0]
             img = cv2.imread(os.path.join(self.img_dir, img_name))
             self.data_dict[img_name] = img
+        print("\n Finish load img to mem.")
 
 
     def __getitem__(self, index):
@@ -66,17 +72,30 @@ class TensorDatasetTrain(Dataset):
         img_name = items[0]
         label = [int(x) for x in items[1:]]
         if self.load_in_mem:
-            img = self.data_dict[img_name]
+            img = self.data_dict[img_name].copy()
         else:
             img = cv2.imread(os.path.join(self.img_dir, img_name))
         
         h,w = img.shape[:2]
 
-        if w!=self.img_size[1]:
-            imgs = np.ones((self.img_size[0],self.img_size[1],3),dtype=np.uint8)*128
+        if h!=self.img_size[0] or w!=self.img_size[1]:
+            imgs = np.ones((self.img_size[0],self.img_size[1],3),dtype=np.uint8)*random.randint(0,255)
 
-            start_w = random.randint(0,10)
-            imgs[:, start_w:start_w+w,:] = img
+            resize_h = self.img_size[0]
+            resize_w = int(w*resize_h/h)
+            # print(img_name, h,w ,resize_h, resize_w)
+            if resize_w>self.img_size[1]:
+                print(img_name, h,w ,resize_h, resize_w)
+                b
+            elif resize_w==self.img_size[1]:
+                imgs = cv2.resize(img, (resize_w,resize_h))
+            else:
+                start_w = random.randint(0,self.img_size[1]-resize_w-1)
+                img = cv2.resize(img, (resize_w,resize_h))
+                imgs[:, start_w:start_w+resize_w,:] = img
+                # cv2.imwrite('t.jpg', imgs)
+                # bb
+            # imgs = cv2.resize(img, (self.img_size[1],self.img_size[0]))
         else:
             imgs = img
 
@@ -116,10 +135,13 @@ class TensorDatasetVal(Dataset):
         label = np.array([int(x) for x in items[1:]])
 
         img = cv2.imread(os.path.join(self.img_dir, img_name))
-
+        # print("000", img.shape)
+        img = cv2.resize(img, (350,40))
+        # print("111", img.shape)
         if self.transform is not None:
             img = self.transform(img)
 
+        # print("222", img.shape)
         return img, label, self.data[index]
         
     def __len__(self):
@@ -137,6 +159,8 @@ class TensorDatasetTest(Dataset):
     def __getitem__(self, index):
 
         img = cv2.imread(self.data[index])
+
+        img = cv2.resize(img, (350,40))
 
         if self.transform is not None:
             img = self.transform(img)
