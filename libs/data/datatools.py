@@ -78,6 +78,7 @@ class TensorDatasetTrain(Dataset):
         
         h,w = img.shape[:2]
 
+        #填充到固定尺寸
         if h!=self.img_size[0] or w!=self.img_size[1]:
             imgs = np.ones((self.img_size[0],self.img_size[1],3),dtype=np.uint8)*random.randint(0,255)
 
@@ -122,11 +123,11 @@ class TensorDatasetTrain(Dataset):
 
 class TensorDatasetVal(Dataset):
     _print_times = 0
-    def __init__(self, data, img_dir, transform=None):
+    def __init__(self, data, img_dir, transform=None, resize_h=40):
         self.data = data
         self.img_dir = img_dir
         self.transform = transform
-
+        self.resize_h = resize_h
 
     def __getitem__(self, index):
 
@@ -136,7 +137,9 @@ class TensorDatasetVal(Dataset):
 
         img = cv2.imread(os.path.join(self.img_dir, img_name))
         # print("000", img.shape)
-        img = cv2.resize(img, (350,40))
+        h,w = img.shape[:2]
+        resize_w = int(w*self.resize_h/h)#+1
+        img = cv2.resize(img, (resize_w,self.resize_h))
         # print("111", img.shape)
         if self.transform is not None:
             img = self.transform(img)
@@ -149,19 +152,23 @@ class TensorDatasetVal(Dataset):
 
 class TensorDatasetTest(Dataset):
 
-    def __init__(self, data, transform=None):
+    def __init__(self, data, transform=None, resize_h=40):
         self.data = data
         if transform is not None:
             self.transform = transform
         else:
             self.transform = None
+        self.resize_h = resize_h
 
     def __getitem__(self, index):
 
         img = cv2.imread(self.data[index])
 
-        img = cv2.resize(img, (350,40))
-
+        # img = cv2.resize(img, (350,40))
+        h,w = img.shape[:2]
+        resize_w = int(w*self.resize_h/h)#+1
+        img = cv2.resize(img, (resize_w,self.resize_h))
+        # print(self.data[index],img.shape)
         if self.transform is not None:
             img = self.transform(img)
 
@@ -212,7 +219,7 @@ def getDataLoader(mode, input_data, cfg):
                                 transforms.Compose([
                                     data_aug_test,
                                     transforms.ToTensor(),
-                                    # transforms.Normalize(0.5,1)
+                                    transforms.Normalize(0.5,1)
                                 ])
                 ), batch_size=1, shuffle=False, 
                 num_workers=cfg['num_workers'], pin_memory=cfg['pin_memory']
@@ -233,7 +240,7 @@ def getDataLoader(mode, input_data, cfg):
                                             transforms.Compose([
                                                 data_aug_train,
                                                 transforms.ToTensor(),
-                                                # transforms.Normalize(0.5,1)
+                                                transforms.Normalize(0.5,1)
                                         ])),
                                 batch_size=cfg['batch_size'], 
                                 shuffle=True, 
@@ -248,7 +255,7 @@ def getDataLoader(mode, input_data, cfg):
                                             transforms.Compose([
                                                 data_aug_test,
                                                 transforms.ToTensor(),
-                                                # transforms.Normalize(0.5,1)
+                                                transforms.Normalize(0.5,1)
                                         ])),
                                 batch_size=1, 
                                 shuffle=False, 
@@ -271,7 +278,7 @@ def getDataLoader(mode, input_data, cfg):
                                             transforms.Compose([
                                                 data_aug_test,
                                                 transforms.ToTensor(),
-                                                # transforms.Normalize(0.5,1)
+                                                transforms.Normalize(0.5,1)
                                         ])),
                                 batch_size=cfg['batch_size'], shuffle=False, num_workers=cfg['num_workers'], pin_memory=cfg['pin_memory'])
 

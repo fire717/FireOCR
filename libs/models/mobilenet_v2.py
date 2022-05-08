@@ -222,4 +222,4 @@ if __name__ == '__main__':
     import os
     os.environ["CUDA_VISIBLE_DEVICES"] = '1'
     model = MobileNetV2().cuda()
-    print(summary(model, (1, 32, 280)))
+    print(summary(model, (1, 40, 350)))

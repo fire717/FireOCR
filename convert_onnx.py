@@ -35,7 +35,7 @@ def main(cfg):
     runner = OCRRunner(cfg, model)
 
     #print(model)
-    runner.modelLoad("output/mobilenetv2_e9_0.96187.pth")
+    runner.modelLoad("output/mobilenetv2_e10_0.92221.pth")
 
 
     runner.model.eval()

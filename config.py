@@ -32,14 +32,14 @@ cfg = {
 
     ### Train Hyperparameters
     "img_size": [40, 350], # [h, w] 
-    'learning_rate':0.001,
+    'learning_rate':0.007,
     'batch_size':256,
     'epochs':10,
     'optimizer':'Adam',  #Adam  SGD 
-    'scheduler':'multi-4,8-0.1', #default  SGDR-5-2  CVPR   step-1-0.4
+    'scheduler':'SGDR-10-2', #default  SGDR-5-2  CVPR   step-1-0.4
     #step-1-0.4
     'warmup_epoch':0, # 
-    'weight_decay' : 0.000,
+    'weight_decay' : 0.0001,
     # "k_flod":5,
     # 'start_fold':0,
     'early_stop_patient':16,
@@ -60,12 +60,12 @@ cfg = {
     ### Test
     'show_heatmap':False,
     
-    'model_path':'output/mobilenetv2_e9_0.96187.pth',#test model
+    'model_path':'output/mobilenetv2_e10_0.93666.pth',#test model
 
     'test_img_dir':"../../data/test1",#test with label,get test acc
     'test_label_path':"../../data/challange/data_test.txt",
 
-    'pre_img_dir':"output/",#test without label, just show img result   ../data/test2/
+    'pre_img_dir':"../data/test3",#test without label, just show img result   ../data/test2/
     'use_TTA':0,
     'test_batch_size': 1,
     

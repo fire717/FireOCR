@@ -130,6 +130,7 @@ class OCRRunner():
             lines = f.readlines()
         for i,line in enumerate(lines):
             self.alphabet[i] = line.strip()
+        self.alphabet[5990] = "卍"
         print("load dict: ", len(self.alphabet))
 
 
@@ -165,6 +166,7 @@ class OCRRunner():
             for (data, img_names) in data_loader:
                 data = data.to(self.device)
 
+                # print(img_names, data.shape)
                 # print(data.shape)
                 output = self.model(data).double()
                 # print(output[0][:20])
@@ -518,7 +520,7 @@ class OCRRunner():
             print_epoch_total = str(self.cfg['epochs'])+''.join([' ']*(4-len(str(self.cfg['epochs']))))
             if batch_idx % self.cfg['log_interval'] == 0:
                 print('\r',
-                    '{}/{} [{}/{} ({:.0f}%)] - ETA: {}, loss: {:.4f}, acc: {:.4f}  LR: {:f}'.format(
+                    '{}/{} [{}/{} ({:.0f}%)] - ETA: {}, loss: {:.4f}, acc: {:.4f}  LR: {:f}           '.format(
                     print_epoch, print_epoch_total, batch_idx * len(data), len(train_loader.dataset),
                     100. * batch_idx / len(train_loader), 
                     datetime.timedelta(seconds=eta),
